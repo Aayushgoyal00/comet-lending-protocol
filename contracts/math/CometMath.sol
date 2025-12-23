@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.15;
 
-contract CometMath {
+import "../constants/ProtocolConstants.sol";
+
+contract CometMath is ProtocolConstants {
     
     /** Custom errors **/
 
