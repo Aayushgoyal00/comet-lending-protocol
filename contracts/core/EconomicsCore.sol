@@ -12,6 +12,7 @@ abstract contract EconomicsCore is CometStorage, CometAccounting, CometConfigura
     uint public immutable borrowPerSecondInterestRateSlopeHigh;
     uint public immutable borrowKink;
 
+    error TimestampTooLarge();
 
     /**
      * @dev Note: Does not accrue interest first
@@ -25,6 +26,13 @@ abstract contract EconomicsCore is CometStorage, CometAccounting, CometConfigura
         } else {
             return totalBorrow_ * FACTOR_SCALE / totalSupply_;
         }
+    }
+    /**
+     * @return The current timestamp
+     **/
+    function getNowInternal() virtual internal view returns (uint40) {
+        if (block.timestamp >= 2**40) revert TimestampTooLarge();
+        return uint40(block.timestamp);
     }
 
     /**

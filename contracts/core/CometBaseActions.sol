@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.15;
 
-import "../storage/ComotStorage.sol";
+import "../storage/CometStorage.sol";
 import "../math/CometAccounting.sol";
 import "../config/CometConfiguration.sol";
+import "./EconomicsCore.sol";
 
-abstract contract CometBaseActions is CometStorage, CometAccounting, CometConfiguration {
+abstract contract CometBaseActions is CometStorage, CometAccounting, CometConfiguration, EconomicsCore {
 
 
     /**
@@ -67,5 +68,66 @@ abstract contract CometBaseActions is CometStorage, CometAccounting, CometConfig
         // }
 
         userBasic[account] = basic;
+    }
+
+    
+
+    /**
+     * @dev Supply an amount of base asset from `from` to dst
+     */
+    function supplyBase(address from, address dst, uint256 amount) internal {
+        amount = doTransferIn(baseToken, from, amount);
+
+        accrueInternal();
+
+        UserBasic memory dstUser = userBasic[dst];
+        int104 dstPrincipal = dstUser.principal;
+        int256 dstBalance = presentValue(dstPrincipal) + signed256(amount);
+        int104 dstPrincipalNew = principalValue(dstBalance);
+
+        (uint104 repayAmount, uint104 supplyAmount) = repayAndSupplyAmount(dstPrincipal, dstPrincipalNew);
+
+        totalSupplyBase += supplyAmount;
+        totalBorrowBase -= repayAmount;
+
+        updateBasePrincipal(dst, dstUser, dstPrincipalNew);
+
+        emit Supply(from, dst, amount);
+
+        if (supplyAmount > 0) {
+            emit Transfer(address(0), dst, presentValueSupply(baseSupplyIndex, supplyAmount));
+        }
+    }
+
+        /**
+     * @dev Withdraw an amount of base asset from src to `to`, borrowing if possible/necessary
+     */
+    function withdrawBase(address src, address to, uint256 amount) internal {
+        accrueInternal();
+
+        UserBasic memory srcUser = userBasic[src];
+        int104 srcPrincipal = srcUser.principal;
+        int256 srcBalance = presentValue(srcPrincipal) - signed256(amount);
+        int104 srcPrincipalNew = principalValue(srcBalance);
+
+        (uint104 withdrawAmount, uint104 borrowAmount) = withdrawAndBorrowAmount(srcPrincipal, srcPrincipalNew);
+
+        totalSupplyBase -= withdrawAmount;
+        totalBorrowBase += borrowAmount;
+
+        updateBasePrincipal(src, srcUser, srcPrincipalNew);
+
+        if (srcBalance < 0) {
+            if (uint256(-srcBalance) < baseBorrowMin) revert BorrowTooSmall();
+            if (!isBorrowCollateralized(src)) revert NotCollateralized();
+        }
+
+        doTransferOut(baseToken, to, amount);
+
+        emit Withdraw(src, to, amount);
+
+        if (withdrawAmount > 0) {
+            emit Transfer(src, address(0), presentValueSupply(baseSupplyIndex, withdrawAmount));
+        }
     }
 }
