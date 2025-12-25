@@ -8,6 +8,8 @@ import "./EconomicsCore.sol";
 
 abstract contract CometBaseActions is CometStorage, CometAccounting, CometConfiguration, EconomicsCore {
 
+    error BorrowTooSmall();
+    error NotCollateralized();
 
     /**
      * @dev The change in principal broken into repay and supply amounts
@@ -76,7 +78,10 @@ abstract contract CometBaseActions is CometStorage, CometAccounting, CometConfig
      * @dev Supply an amount of base asset from `from` to dst
      */
     function supplyBase(address from, address dst, uint256 amount) internal {
-        amount = doTransferIn(baseToken, from, amount);
+
+
+        // would implement this in the comet.sol after the phase3
+        // amount = doTransferIn(baseToken, from, amount);
 
         accrueInternal();
 
@@ -119,10 +124,13 @@ abstract contract CometBaseActions is CometStorage, CometAccounting, CometConfig
 
         if (srcBalance < 0) {
             if (uint256(-srcBalance) < baseBorrowMin) revert BorrowTooSmall();
-            if (!isBorrowCollateralized(src)) revert NotCollateralized();
-        }
 
-        doTransferOut(baseToken, to, amount);
+            // will do later
+            // if (!isBorrowCollateralized(src)) revert NotCollateralized();
+
+        }
+        // would implement this in the comet.sol after the phase3
+        // doTransferOut(baseToken, to, amount);
 
         emit Withdraw(src, to, amount);
 
@@ -130,4 +138,46 @@ abstract contract CometBaseActions is CometStorage, CometAccounting, CometConfig
             emit Transfer(src, address(0), presentValueSupply(baseSupplyIndex, withdrawAmount));
         }
     }
+
+        /**
+     * @dev Transfer an amount of base asset from src to dst, borrowing if possible/necessary
+     */
+    function transferBase(address src, address dst, uint256 amount) internal {
+        accrueInternal();
+
+        UserBasic memory srcUser = userBasic[src];
+        UserBasic memory dstUser = userBasic[dst];
+
+        int104 srcPrincipal = srcUser.principal;
+        int104 dstPrincipal = dstUser.principal;
+        int256 srcBalance = presentValue(srcPrincipal) - signed256(amount);
+        int256 dstBalance = presentValue(dstPrincipal) + signed256(amount);
+        int104 srcPrincipalNew = principalValue(srcBalance);
+        int104 dstPrincipalNew = principalValue(dstBalance);
+
+        (uint104 withdrawAmount, uint104 borrowAmount) = withdrawAndBorrowAmount(srcPrincipal, srcPrincipalNew);
+        (uint104 repayAmount, uint104 supplyAmount) = repayAndSupplyAmount(dstPrincipal, dstPrincipalNew);
+
+        // Note: Instead of `total += addAmount - subAmount` to avoid underflow errors.
+        totalSupplyBase = totalSupplyBase + supplyAmount - withdrawAmount;
+        totalBorrowBase = totalBorrowBase + borrowAmount - repayAmount;
+
+        updateBasePrincipal(src, srcUser, srcPrincipalNew);
+        updateBasePrincipal(dst, dstUser, dstPrincipalNew);
+
+        if (srcBalance < 0) {
+            if (uint256(-srcBalance) < baseBorrowMin) revert BorrowTooSmall();
+            // will do later
+            // if (!isBorrowCollateralized(src)) revert NotCollateralized();
+        }
+
+        if (withdrawAmount > 0) {
+            emit Transfer(src, address(0), presentValueSupply(baseSupplyIndex, withdrawAmount));
+        }
+
+        if (supplyAmount > 0) {
+            emit Transfer(address(0), dst, presentValueSupply(baseSupplyIndex, supplyAmount));
+        }
+    }
+
 }
