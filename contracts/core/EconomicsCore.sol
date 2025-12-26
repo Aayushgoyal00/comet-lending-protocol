@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.15;
 
-import "../storage/ComotStorage.sol";
+import "../storage/CometStorage.sol";
 import "../math/CometAccounting.sol";
 import "../config/CometConfiguration.sol";
 

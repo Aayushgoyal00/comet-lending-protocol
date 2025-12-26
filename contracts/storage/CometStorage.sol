@@ -35,4 +35,15 @@ contract CometStorage {
     mapping(address => mapping(address => bool)) public isAllowed;
 
     mapping(address => uint256) public userNonce;
+
+    struct AssetInfo {
+        uint8 offset;
+        address asset;
+        address priceFeed;
+        uint64 scale;
+        uint64 borrowCollateralFactor;
+        uint64 liquidateCollateralFactor;
+        uint64 liquidationFactor;
+        uint128 supplyCap;
+    }
 }

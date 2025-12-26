@@ -58,4 +58,6 @@ contract CometConfiguration {
         uint64 liquidationFactor;
         uint128 supplyCap;
     }
+
+
 }
