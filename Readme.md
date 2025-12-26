@@ -2,7 +2,7 @@
 
 A production-grade reimplementation of the Compound V3 lending protocol, built with a focus on security, clarity, and maintainability. This project reconstructs the core lending mechanics using a phase-wise development approach.
 
-## 🎯 Project Overview
+## Project Overview
 
 This repository contains a ground-up reimplementation of Compound V3's core lending functionality. The implementation is structured in distinct phases to ensure proper separation of concerns and make the codebase easier to understand and audit.
 
@@ -13,7 +13,7 @@ This repository contains a ground-up reimplementation of Compound V3's core lend
 - Collateral management with supply caps
 - Liquidation mechanics (in progress)
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 contracts/
@@ -39,9 +39,9 @@ documentation/
 └── Phase_1_Invariants.md     # Complete documentation of protocol invariants
 ```
 
-## 🔄 Phase-Wise Implementation
+## Phase-Wise Implementation
 
-### **Phase 1: Configuration & Storage Invariants** ✅ 
+### **Phase 1: Configuration & Storage Invariants** [COMPLETE] 
 
 **Status:** Complete
 
@@ -65,7 +65,7 @@ Established the foundational layer by defining all protocol invariants and stora
 - Interest rate parameter limits
 - Numerical safety constraints for fixed-point math
 
-### **Phase 2: Economics & Interest Rate Model** ✅
+### **Phase 2: Economics & Interest Rate Model** [COMPLETE]
 
 **Status:** Complete
 
@@ -96,7 +96,7 @@ Implemented the core economic engine that drives interest accrual and rate calcu
 - Above kink: `rate = base + slope_low × kink + slope_high × (utilization - kink)`
 - Per-second rate calculation for precise accrual
 
-### **Phase 3: State Machine & Core Actions** ✅
+### **Phase 3: State Machine & Core Actions** [COMPLETE]
 
 **Status:** Complete
 
@@ -123,7 +123,7 @@ Implemented user-facing actions for supplying, withdrawing, and borrowing assets
 - Multi-collateral support with individual collateral factors
 - Asset-in bitmap for efficient tracking
 
-### **Phase 4: Integration & Main Contract** 🚧
+### **Phase 4: Integration & Main Contract** [IN PROGRESS]
 
 **Status:** Planned
 
@@ -135,7 +135,7 @@ Will combine all components into the main `Comet.sol` contract with token transf
 - Authorization and allowance system
 - Emergency pause functionality (optional)
 
-### **Phase 5: Rewards System** 📋
+### **Phase 5: Rewards System** [PLANNED]
 
 **Status:** Not started
 
@@ -146,7 +146,7 @@ Will implement the reward tracking and distribution mechanism.
 - Reward accrual for suppliers and borrowers
 - Reward token claiming
 
-## 🔧 Technical Highlights
+## Technical Highlights
 
 ### Interest Accounting
 - **Index-based system:** Uses growing indices to track interest without updating every user
@@ -168,23 +168,23 @@ Will implement the reward tracking and distribution mechanism.
 - Clear separation between storage, math, and logic
 - Internal functions for composability
 
-## 🎓 Learning Resources
+## Learning Resources
 
 - **Phase_1_Invariants.md** - Comprehensive documentation of all protocol assumptions and constraints
 - Inline comments explaining complex calculations
 - Clear function naming following Compound V3 conventions
 
-## ⚠️ Status & Disclaimers
+## Status & Disclaimers
 
 **This is an educational reimplementation.**
-- ✅ Core lending mechanics implemented
-- ✅ Interest rate model functional
-- ✅ Collateral management operational
-- 🚧 Token transfers not yet integrated
-- 🚧 Liquidations not yet implemented
-- 🚧 Not audited - DO NOT use in production
+- Core lending mechanics implemented
+- Interest rate model functional
+- Collateral management operational
+- Token transfers not yet integrated
+- Liquidations not yet implemented
+- Not audited - DO NOT use in production
 
-## 🚀 Next Steps
+## Next Steps
 
 1. Complete Phase 4 - Integrate token transfers into Comet.sol
 2. Implement liquidation mechanics
@@ -192,7 +192,7 @@ Will implement the reward tracking and distribution mechanism.
 4. Deploy to testnet for integration testing
 5. Begin Phase 5 - Rewards system
 
-## 📝 Notes
+## Notes
 
 - Governance features omitted for simplicity
 - Pause functionality not implemented
