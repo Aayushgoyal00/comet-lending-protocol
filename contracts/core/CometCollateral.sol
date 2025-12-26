@@ -1,69 +1,18 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.15;
 
-import "../storage/CometStorage.sol";
-import "../math/CometAccounting.sol";
-import "../config/CometConfiguration.sol";
+// import "../storage/CometStorage.sol";
+// import "../math/CometAccounting.sol";
+// import "../config/CometConfiguration.sol";
 import "./EconomicsCore.sol";
 
-abstract contract CometCollateral is CometStorage, CometAccounting, CometConfiguration, EconomicsCore {
+abstract contract CometCollateral is EconomicsCore {
 
-    error BadAsset();
-    error Absurd();
+    
     error SupplyCapExceeded();
     event SupplyCollateral(address indexed from, address indexed dst, address indexed asset, uint amount);
     event WithdrawCollateral(address indexed src, address indexed to, address indexed asset, uint amount);
-    /**
-     * @notice Get the i-th asset info, according to the order they were passed in originally
-     * @param i The index of the asset info to get
-     * @return The asset info object
-     */
-    function getAssetInfo(uint8 i) override public view returns (AssetInfo memory) {
-        if (i >= numAssets) revert BadAsset();
 
-        uint256 word_a;
-        uint256 word_b;
-
-        if (i == 0) {
-            word_a = asset00_a;
-            word_b = asset00_b;
-        } else if (i == 1) {
-            word_a = asset01_a;
-            word_b = asset01_b;
-        } else if (i == 2) {
-            word_a = asset02_a;
-            word_b = asset02_b;
-        } else if (i == 3) {
-            word_a = asset03_a;
-            word_b = asset03_b;
-        } else if (i == 4) {
-            word_a = asset04_a;
-            word_b = asset04_b;
-        } else if (i == 5) {
-            word_a = asset05_a;
-            word_b = asset05_b;
-        } else if (i == 6) {
-            word_a = asset06_a;
-            word_b = asset06_b;
-        } else if (i == 7) {
-            word_a = asset07_a;
-            word_b = asset07_b;
-        } else if (i == 8) {
-            word_a = asset08_a;
-            word_b = asset08_b;
-        } else if (i == 9) {
-            word_a = asset09_a;
-            word_b = asset09_b;
-        } else if (i == 10) {
-            word_a = asset10_a;
-            word_b = asset10_b;
-        } else if (i == 11) {
-            word_a = asset11_a;
-            word_b = asset11_b;
-        } else {
-            revert Absurd();
-        }
-    }
 
     /**
      * @dev Determine index of asset that matches given address

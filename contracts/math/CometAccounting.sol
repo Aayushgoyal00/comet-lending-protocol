@@ -27,7 +27,21 @@ contract CometAccounting is CometMath,CometStorage {
         return n * factor / FACTOR_SCALE;
     }
 
+    /**
+     * @dev Multiply a `fromScale` quantity by a price, returning a common price quantity
+     */
+    function mulPrice(uint n, uint price, uint64 fromScale) internal pure returns (uint) {
+        return n * price / fromScale;
+    }
     
+    /**
+     * @dev Multiply a signed `fromScale` quantity by a price, returning a common price quantity
+     */
+    function signedMulPrice(int n, uint price, uint64 fromScale) internal pure returns (int) {
+        return n * signed256(price) / int256(uint256(fromScale));
+    }
+
+
     /**
      * @dev The positive present supply balance if positive or the negative borrow balance if negative
      */

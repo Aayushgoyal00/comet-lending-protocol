@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.15;
 
-import "../storage/CometStorage.sol";
-import "../math/CometAccounting.sol";
-import "../config/CometConfiguration.sol";
+// import "../storage/CometStorage.sol";
+// import "../math/CometAccounting.sol";
+// import "../config/CometConfiguration.sol";
 import "./EconomicsCore.sol";
 
-abstract contract CometBaseActions is CometStorage, CometAccounting, CometConfiguration, EconomicsCore {
+abstract contract CometBaseActions is EconomicsCore {
 
     error BorrowTooSmall();
     error NotCollateralized();
