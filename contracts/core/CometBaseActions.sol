@@ -4,9 +4,9 @@ pragma solidity ^0.8.15;
 // import "../storage/CometStorage.sol";
 // import "../math/CometAccounting.sol";
 // import "../config/CometConfiguration.sol";
-import "./EconomicsCore.sol";
+import "./TokenActions.sol";
 
-abstract contract CometBaseActions is EconomicsCore {
+abstract contract CometBaseActions is TokenActions {
 
     error BorrowTooSmall();
     error NotCollateralized();
@@ -79,9 +79,7 @@ abstract contract CometBaseActions is EconomicsCore {
      */
     function supplyBase(address from, address dst, uint256 amount) internal {
 
-
-        // would implement this in the comet.sol after the phase3
-        // amount = doTransferIn(baseToken, from, amount);
+        amount = doTransferIn(baseToken, from, amount);
 
         accrueInternal();
 
@@ -130,7 +128,7 @@ abstract contract CometBaseActions is EconomicsCore {
 
         }
         // would implement this in the comet.sol after the phase3
-        // doTransferOut(baseToken, to, amount);
+        doTransferOut(baseToken, to, amount);
 
         emit Withdraw(src, to, amount);
 

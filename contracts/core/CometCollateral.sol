@@ -4,9 +4,9 @@ pragma solidity ^0.8.15;
 // import "../storage/CometStorage.sol";
 // import "../math/CometAccounting.sol";
 // import "../config/CometConfiguration.sol";
-import "./EconomicsCore.sol";
+import "./TokenActions.sol";
 
-abstract contract CometCollateral is EconomicsCore {
+abstract contract CometCollateral is TokenActions {
 
     
     error SupplyCapExceeded();
@@ -35,7 +35,7 @@ abstract contract CometCollateral is EconomicsCore {
     function supplyCollateral(address from, address dst, address asset, uint128 amount) internal {
 
         // will implement this in the comet.sol after the phase3
-        // amount = safe128(doTransferIn(asset, from, amount));
+        amount = safe128(doTransferIn(asset, from, amount));
 
         AssetInfo memory assetInfo = getAssetInfoByAddress(asset);
         TotalsCollateral memory totals = totalsCollateral[asset];
@@ -89,7 +89,7 @@ abstract contract CometCollateral is EconomicsCore {
         // Note: no accrue interest, BorrowCF < LiquidationCF covers small changes
         if (!isBorrowCollateralized(src)) revert NotCollateralized();
 
-        // doTransferOut(asset, to, amount);
+        doTransferOut(asset, to, amount);
 
         emit WithdrawCollateral(src, to, asset, amount);
 
