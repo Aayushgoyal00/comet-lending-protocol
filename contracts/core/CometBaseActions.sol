@@ -126,7 +126,7 @@ abstract contract CometBaseActions is EconomicsCore {
             if (uint256(-srcBalance) < baseBorrowMin) revert BorrowTooSmall();
 
             // will do later
-            // if (!isBorrowCollateralized(src)) revert NotCollateralized();
+            if (!isBorrowCollateralized(src)) revert NotCollateralized();
 
         }
         // would implement this in the comet.sol after the phase3
@@ -168,7 +168,7 @@ abstract contract CometBaseActions is EconomicsCore {
         if (srcBalance < 0) {
             if (uint256(-srcBalance) < baseBorrowMin) revert BorrowTooSmall();
             // will do later
-            // if (!isBorrowCollateralized(src)) revert NotCollateralized();
+            if (!isBorrowCollateralized(src)) revert NotCollateralized();
         }
 
         if (withdrawAmount > 0) {

@@ -87,7 +87,7 @@ abstract contract CometCollateral is EconomicsCore {
         // will implement this in the comet.sol after the phase3
 
         // Note: no accrue interest, BorrowCF < LiquidationCF covers small changes
-        // if (!isBorrowCollateralized(src)) revert NotCollateralized();
+        if (!isBorrowCollateralized(src)) revert NotCollateralized();
 
         // doTransferOut(asset, to, amount);
 
@@ -113,7 +113,7 @@ abstract contract CometCollateral is EconomicsCore {
         // will implement this in the comet.sol after the phase3
         
         // Note: no accrue interest, BorrowCF < LiquidationCF covers small changes
-        // if (!isBorrowCollateralized(src)) revert NotCollateralized();
+        if (!isBorrowCollateralized(src)) revert NotCollateralized();
 
         emit TransferCollateral(src, dst, asset, amount);
     }
